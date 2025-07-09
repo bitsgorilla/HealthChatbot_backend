@@ -3,6 +3,7 @@ import json
 
 
 import requests
+from security import safe_requests
 
 router = APIRouter()
 
@@ -31,10 +32,10 @@ def send_message(conversation_id: str, message: MessageSchema):
         "text": message.message
     }
     response = requests.post(f'{BASE_URL}/conversations/{conversation_id}/activities', headers=headers, data=json.dumps(data), timeout=60)
-    response = requests.get(f'{BASE_URL}/conversations/{conversation_id}/activities', headers=headers, timeout=60)
+    response = safe_requests.get(f'{BASE_URL}/conversations/{conversation_id}/activities', headers=headers, timeout=60)
     return response.json()["activities"][-1]["text"]
 
 @router.get("/receive_message/{conversation_id}")
 def receive_message(conversation_id: str):
-    response = requests.get(f'{BASE_URL}/conversations/{conversation_id}/activities', headers=headers, timeout=60)    
+    response = safe_requests.get(f'{BASE_URL}/conversations/{conversation_id}/activities', headers=headers, timeout=60)    
     return response.json()["activities"][-1]["text"]
